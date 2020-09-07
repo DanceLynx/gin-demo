@@ -40,3 +40,29 @@ func TestDB(ctx *gin.Context) {
 func Test(ctx *gin.Context) {
 	panic("this is me")
 }
+
+func TestQuery(ctx *gin.Context) {
+
+	m := ctx.QueryMap("map")
+	value,ok := m["map"]
+	if !ok {
+		value = "default value"
+	}
+	Success(ctx,"策划功能",gin.H{
+		"name":ctx.Query("name"),
+		"age":ctx.DefaultQuery("age","default value"),
+		"body":ctx.DefaultPostForm("body","default body"),
+		"map":value,
+	})
+}
+
+
+func TestBind(ctx *gin.Context) {
+	var user model.User
+	//ShouldBindQuery
+	if err:=ctx.ShouldBind(&user);err !=nil {
+		ctx.JSON(200,gin.H{"error":err.Error()})
+		return
+	}
+	ctx.JSON(200,user)
+}
