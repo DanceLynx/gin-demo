@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"fmt"
 	"hello/config"
 	"hello/model"
 	"strings"
@@ -29,9 +28,11 @@ func ConnectDB() {
 	db.DB().SetMaxIdleConns(config.DB.MaxIdleConns)
 	db.DB().SetMaxOpenConns(config.DB.ConnMaxLifeTime)
 
-	fmt.Println("connnect to mysql database successful.")
+	InitLogger.Info("database", "connnect to mysql database successful")
 	// 启用Logger，显示详细日志
 	db.LogMode(config.DB.ShowSql)
+	db.SetLogger(&gormLogger{})
+
 }
 
 func DisconnectDB() {
@@ -46,5 +47,5 @@ func AutoMigrate() {
 	table_options := "CHARSET=" + config.DB.CHARSET
 
 	db.Set("gorm:table_options", table_options).AutoMigrate(&model.User{})
-	fmt.Println("migrate table successful")
+	InitLogger.Info("database", "migrate table successful")
 }

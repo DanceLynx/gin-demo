@@ -1,10 +1,9 @@
 package service
 
 import (
+	"context"
 	"github.com/go-redis/redis/v8"
 	"hello/config"
-	"context"
-	"fmt"
 )
 
 var Redis *redis.Client
@@ -16,8 +15,8 @@ func ConnectRedis() {
 	})
 	ctx := context.Background()
 	_, err := Redis.Ping(ctx).Result()
-	if err !=nil {
+	if err != nil {
 		panic(err)
 	}
-	fmt.Println("connnect to redis successful.")
+	InitLogger.Info("redis", "connnect to redis successful")
 }

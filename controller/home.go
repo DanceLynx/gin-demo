@@ -34,7 +34,11 @@ func TestDB(ctx *gin.Context) {
 	fmt.Println(user)
 
 	user1, err1 := service.User.GetUserById(1)
-	fmt.Println("----------",user1, err1)
+	if err1 != nil {
+		service.Logger.Error("user1 error", err1)
+	}
+	service.Logger.Info("user1", user1)
+	Success(ctx, "成功", gin.H{"data": user1})
 }
 
 func Test(ctx *gin.Context) {
