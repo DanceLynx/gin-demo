@@ -1,10 +1,8 @@
 package middleware
 
 import (
-	"github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"hello/service"
-	"time"
 )
 
 func LoadMiddlewares(router *gin.Engine) {
@@ -13,7 +11,7 @@ func LoadMiddlewares(router *gin.Engine) {
 	//   - Logs all requests, like a combined access and error log.
 	//   - Logs to stdout.
 	//   - RFC3339 with UTC time format.
-	router.Use(ginzap.Ginzap(service.HttpLogger, time.RFC3339, true))
+	router.Use(ginLog(service.HttpLogger))
 
 	// Logs all panic to error log
 	//   - stack means whether output the stack info.
