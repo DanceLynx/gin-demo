@@ -97,7 +97,19 @@ func (this *LoggerStruct) getData(data interface{}) []interface{} {
 	if !ok {
 		panic("can not get file path and line")
 	}
-	slice = append(slice, "file", fmt.Sprintf("%s:%d", trimmedPath(file), line))
+	
+	fileAndLine := fmt.Sprintf("%s:%d", trimmedPath(file), line)
+	//gorm的file写在data里面，替换到外面标准格式
+	if m,ok := data.(map[string]interface{});ok {
+		value,ok := m["file"]
+		if ok {
+			fileAndLine = trimmedPath(value.(string))
+			delete(m,"file")
+
+		}
+	}
+	
+	slice = append(slice, "file", fileAndLine)
 	slice = append(slice, "data", data)
 	return slice
 }

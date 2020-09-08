@@ -39,7 +39,7 @@ func NotFound(ctx *gin.Context) {
 		Message: "页面不存在",
 		Data:    gin.H{},
 	}
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusNotFound, response)
 }
 
 func StatusInternalServerError(ctx *gin.Context) {
@@ -49,5 +49,5 @@ func StatusInternalServerError(ctx *gin.Context) {
 		Message: "服务器内部错误",
 		Data:    gin.H{},
 	}
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusInternalServerError, response)
 }

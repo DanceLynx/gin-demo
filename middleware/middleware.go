@@ -17,7 +17,7 @@ func LoadMiddlewares(router *gin.Engine) {
 
 	// Logs all panic to error log
 	//   - stack means whether output the stack info.
-	router.Use(ginzap.RecoveryWithZap(service.ErrorLogger, true))
+	router.Use(recoveryWithLog(service.ErrorLogger, true))
 
 	service.InitLogger.Info("middleware", "load all middleware successful")
 }
