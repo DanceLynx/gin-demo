@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	BaseModel
-	Username string    `gorm:"size:50;default:'';comment:'登录名';not null;index" form:"username" binding:"required,min=6"`
+	Username string    `gorm:"size:50;default:'';comment:'登录名';not null;index" form:"username"`
 	Password string    `gorm:"type:varchar(100);default:'';comment:'密码';not null" form:"pass"`
 	Status   int       `gorm:"type:tinyint;default:1"`
 	CreateAt time.Time `gorm:"column:ctime;comment:'创建时间';not null"`

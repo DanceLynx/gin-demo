@@ -18,3 +18,9 @@ func (this *userService) GetUserById(id int) (*model.User, error) {
 	err := db.First(model, id).Error
 	return model, err
 }
+
+func (this *userService) FindByNameAndPass(username,pass string) (model.User,error) {
+	var user model.User
+	err := db.Where(model.User{Username: username,Password:pass}).First(&user)
+	return user,err.Error
+}

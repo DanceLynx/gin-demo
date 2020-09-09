@@ -33,13 +33,30 @@ func Error(ctx *gin.Context, code constant.ResponseCode, message string, data ma
 }
 
 func NotFound(ctx *gin.Context) {
-	ctx.Status(http.StatusNotFound)
 	response := response{
 		Code:    constant.CODE_404,
 		Message: "页面不存在",
 		Data:    gin.H{},
 	}
 	ctx.JSON(http.StatusNotFound, response)
+}
+
+func NoMethod(ctx *gin.Context) {
+	response := response{
+		Code:    constant.CODE_404,
+		Message: "Method不存在",
+		Data:    gin.H{},
+	}
+	ctx.JSON(http.StatusMethodNotAllowed, response)
+}
+
+func StatusUnauthorized(ctx *gin.Context) {
+	response := response{
+		Code:    constant.USER_VERIFY_FAILD,
+		Message: "认证失败",
+		Data:    gin.H{},
+	}
+	ctx.JSON(http.StatusUnauthorized, response)
 }
 
 func StatusInternalServerError(ctx *gin.Context) {
