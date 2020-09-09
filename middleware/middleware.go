@@ -7,6 +7,8 @@ import (
 
 func LoadMiddlewares(router *gin.Engine) {
 
+	router.Use(injectData) //middleware for inject data
+
 	// Add a ginzap middleware, which:
 	//   - Logs all requests, like a combined access and error log.
 	//   - Logs to stdout.
@@ -17,5 +19,5 @@ func LoadMiddlewares(router *gin.Engine) {
 	//   - stack means whether output the stack info.
 	router.Use(recoveryWithLog(service.ErrorLogger, true))
 
-	service.InitLogger.Info("middleware", "load all middleware successful")
+	service.InitLogger.Info("load all middleware successful")
 }

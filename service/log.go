@@ -15,9 +15,9 @@ type LoggerStruct struct {
 	baseLogger *zap.SugaredLogger
 }
 
-var Logger, InitLogger *LoggerStruct
+var Logger *LoggerStruct
 
-var HttpLogger, ErrorLogger *zap.Logger
+var HttpLogger, ErrorLogger, InitLogger *zap.Logger
 
 func InitLog() {
 
@@ -26,10 +26,8 @@ func InitLog() {
 	}
 	HttpLogger = getLogger("access", "console", zapcore.InfoLevel)
 	ErrorLogger = getLogger("error", "console", zapcore.ErrorLevel)
-	InitLogger = &LoggerStruct{
-		baseLogger: getLogger("init", "console", zapcore.InfoLevel).Sugar(),
-	}
-	InitLogger.Info("log", "init log successful.")
+	InitLogger = getLogger("init", "console", zapcore.InfoLevel)
+	InitLogger.Info("init log successful.")
 }
 
 func getLogger(filename string, encodertype string, level zapcore.Level) *zap.Logger {
@@ -88,7 +86,7 @@ func LogSync() {
 	Logger.baseLogger.Sync()
 	HttpLogger.Sync()
 	ErrorLogger.Sync()
-	InitLogger.baseLogger.Sync()
+	InitLogger.Sync()
 }
 
 func (this *LoggerStruct) getData(data interface{}) []interface{} {
@@ -97,18 +95,18 @@ func (this *LoggerStruct) getData(data interface{}) []interface{} {
 	if !ok {
 		panic("can not get file path and line")
 	}
-	
+
 	fileAndLine := fmt.Sprintf("%s:%d", trimmedPath(file), line)
 	//gorm的file写在data里面，替换到外面标准格式
-	if m,ok := data.(map[string]interface{});ok {
-		value,ok := m["file"]
+	if m, ok := data.(map[string]interface{}); ok {
+		value, ok := m["file"]
 		if ok {
 			fileAndLine = trimmedPath(value.(string))
-			delete(m,"file")
+			delete(m, "file")
 
 		}
 	}
-	
+
 	slice = append(slice, "file", fileAndLine)
 	slice = append(slice, "data", data)
 	return slice

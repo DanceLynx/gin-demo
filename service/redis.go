@@ -18,5 +18,5 @@ func ConnectRedis() {
 	if err != nil {
 		panic(err)
 	}
-	InitLogger.Info("redis", "connnect to redis successful")
+	InitLogger.Info("connnect to redis successful")
 }
