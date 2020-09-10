@@ -7,6 +7,7 @@ import (
 	"hello/model"
 	"hello/service"
 	"hello/util"
+	"strconv"
 )
 
 func Login(ctx *gin.Context) {
@@ -26,7 +27,17 @@ func Login(ctx *gin.Context) {
 		Error(ctx, constant.USER_JWT_ERROR, "登录失败", gin.H{})
 		return
 	}
+	err = service.Redis.HMSet(ctx, "jwt:user:"+strconv.Itoa(int(dbUser.ID)), 
+		map[string]interface{}{
+			"userId":dbUser.ID,
+			"username":dbUser.Username,
+		},
+	).Err()
 
+	if err != nil {
+		Error(ctx, constant.REDIS_ERROR,err.Error(), gin.H{})
+		return
+	}
 	ctx.Writer.Header().Set("Authentication", access_token)
 	Success(ctx, "登录成功", gin.H{})
 

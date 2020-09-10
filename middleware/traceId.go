@@ -7,11 +7,11 @@ import (
 	"time"
 )
 
-func injectData(ctx *gin.Context) {
+func injectTraceId(ctx *gin.Context) {
 	timeoutContext, _ := context.WithTimeout(context.Background(), time.Second)
 
-	traceId := ksuid.New().String()
-	context.WithValue(timeoutContext, "traceId", traceId)
-	ctx.Set("traceId", traceId)
+	requestId := ksuid.New().String()
+	context.WithValue(timeoutContext, "traceId", requestId)
+	ctx.Set("traceId", requestId)
 	ctx.Next()
 }

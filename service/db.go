@@ -31,7 +31,6 @@ func ConnectDB() {
 	InitLogger.Info("connnect to mysql database successful")
 	// 启用Logger，显示详细日志
 	db.LogMode(config.DB.ShowSql)
-	db.SetLogger(&gormLogger{})
 
 }
 

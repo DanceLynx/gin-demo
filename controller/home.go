@@ -35,9 +35,12 @@ func TestDB(ctx *gin.Context) {
 
 	user1, err1 := service.User.GetUserById(1)
 	if err1 != nil {
-		service.Logger.Error("user1 error", err1)
+		service.Logger.Error(ctx,"user1 error", err1)
 	}
-	service.Logger.Info("user1", user1)
+	service.Logger.Info(ctx,"user1", user1)
+	service.Logger.Info(ctx,"444444", user1)
+	service.Logger.Info(ctx,"66666666", user1)
+	service.Redis.Set(ctx, "name", "Hello JSON", 5)
 	Success(ctx, "成功", gin.H{"data": user1})
 }
 

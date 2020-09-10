@@ -15,7 +15,7 @@ func LoadRoutes(router *gin.Engine) {
 	//405 method not exist
 	router.NoMethod(controller.NoMethod)
 	//jwt login
-	router.GET("/login", controller.Login)
+	router.POST("/login", controller.Login)
 
 	v1 := router.Group("/v1")
 	v1.Use(middleware.AuthRequired)

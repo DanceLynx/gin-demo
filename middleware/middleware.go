@@ -13,7 +13,7 @@ func LoadMiddlewares(router *gin.Engine) {
 	//   - Logs all requests, like a combined access and error log.
 	//   - Logs to stdout.
 	//   - RFC3339 with UTC time format.
-	router.Use(ginLog(service.HttpLogger))
+	router.Use(accessLog(service.HttpLogger))
 
 	// Logs all panic to error log
 	//   - stack means whether output the stack info.

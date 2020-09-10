@@ -7,7 +7,7 @@ import (
 )
 
 
-func ginLog(logger *zap.Logger) gin.HandlerFunc {
+func accessLog(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		// some evil middlewares modify this values

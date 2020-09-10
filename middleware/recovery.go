@@ -52,6 +52,8 @@ func recoveryWithLog(logger *zap.Logger, stack bool) gin.HandlerFunc {
 					)
 				}
 				controller.StatusInternalServerError(c)
+				c.Abort()
+				return
 			}
 		}()
 		c.Next()

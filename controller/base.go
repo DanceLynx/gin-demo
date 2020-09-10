@@ -29,7 +29,7 @@ func Error(ctx *gin.Context, code constant.ResponseCode, message string, data ma
 		Message: message,
 		Data:    data,
 	}
-	ctx.JSON(http.StatusOK, response)
+	ctx.AbortWithStatusJSON(http.StatusOK, response)
 }
 
 func NotFound(ctx *gin.Context) {

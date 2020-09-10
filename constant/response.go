@@ -14,4 +14,7 @@ const (
 	USER_JWT_ERROR       ResponseCode = 1003 //登录生成jwt token失败
 	USER_VERIFY_FAILD    ResponseCode = 1004 //jwt认证失败
 	USER_JWT_PARSE_FAILD ResponseCode = 1005 //jwt解析失败
+
+	REDIS_ERROR ResponseCode  = 5000//redis 错误
+	REDIS_KEY_NOT_EXISTS_ERR ResponseCode = 5001 //redis key不存在
 )
