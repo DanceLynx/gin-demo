@@ -1,13 +1,13 @@
-package middleware 
+package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"strings"
 	"go.uber.org/zap"
-	"net"
 	"hello/controller"
+	"net"
 	"os"
 	"runtime/debug"
+	"strings"
 )
 
 func recoveryWithLog(logger *zap.Logger, stack bool) gin.HandlerFunc {

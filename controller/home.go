@@ -28,14 +28,14 @@ func TestDB(ctx *gin.Context) {
 	user := model.User{
 		Username: "范兄弟",
 		Password: "3333",
-		CreateAt:time.Now(),
+		CreateAt: time.Now(),
 	}
-	result:= service.DB(ctx).Create(&user)
+	result := service.DB(ctx).Create(&user)
 	if result.Error != nil {
-		service.Logger.Error(ctx,"create User error", result.Error)
+		service.Logger.Error(ctx, "create User error", result.Error)
 	} else {
-		service.Logger.Info(ctx,"create User", user)
-		service.Redis.Set(ctx,"hello",user.Username,5)
+		service.Logger.Info(ctx, "create User", user)
+		service.Redis.Set(ctx, "hello", user.Username, 5)
 		Success(ctx, "成功", gin.H{"data": user})
 	}
 }
@@ -47,25 +47,24 @@ func Test(ctx *gin.Context) {
 func TestQuery(ctx *gin.Context) {
 
 	m := ctx.QueryMap("map")
-	value,ok := m["map"]
+	value, ok := m["map"]
 	if !ok {
 		value = "default value"
 	}
-	Success(ctx,"策划功能",gin.H{
-		"name":ctx.Query("name"),
-		"age":ctx.DefaultQuery("age","default value"),
-		"body":ctx.DefaultPostForm("body","default body"),
-		"map":value,
+	Success(ctx, "策划功能", gin.H{
+		"name": ctx.Query("name"),
+		"age":  ctx.DefaultQuery("age", "default value"),
+		"body": ctx.DefaultPostForm("body", "default body"),
+		"map":  value,
 	})
 }
-
 
 func TestBind(ctx *gin.Context) {
 	var user model.User
 	//ShouldBindQuery
-	if err:=ctx.ShouldBind(&user);err !=nil {
-		ctx.JSON(200,gin.H{"error":err.Error()})
+	if err := ctx.ShouldBind(&user); err != nil {
+		ctx.JSON(200, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(200,user)
+	ctx.JSON(200, user)
 }

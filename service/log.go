@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs" //日志切分
 	"go.uber.org/zap"
@@ -9,14 +10,13 @@ import (
 	"runtime"
 	"strings"
 	"time"
-	"context"
 )
 
 type LoggerStruct struct {
 	baseLogger *zap.SugaredLogger
 }
 
-var Logger *LoggerStruct
+var Logger, gormLogger *LoggerStruct
 
 var HttpLogger, ErrorLogger, InitLogger *zap.Logger
 
@@ -24,6 +24,9 @@ func InitLog() {
 
 	Logger = &LoggerStruct{
 		baseLogger: getLogger("app", "json", zapcore.DebugLevel).Sugar(),
+	}
+	gormLogger = &LoggerStruct{
+		baseLogger: getLogger("mysql", "console", zapcore.DebugLevel).Sugar(),
 	}
 	HttpLogger = getLogger("request", "console", zapcore.InfoLevel)
 	ErrorLogger = getLogger("error", "console", zapcore.ErrorLevel)
@@ -85,12 +88,13 @@ func getWriter(filename string) io.Writer {
 
 func LogSync() {
 	Logger.baseLogger.Sync()
+	gormLogger.baseLogger.Sync()
 	HttpLogger.Sync()
 	ErrorLogger.Sync()
 	InitLogger.Sync()
 }
 
-func (this *LoggerStruct) getData(ctx context.Context,data interface{}) []interface{} {
+func (this *LoggerStruct) getData(ctx context.Context, data interface{}) []interface{} {
 	slice := make([]interface{}, 0)
 	_, file, line, ok := runtime.Caller(2)
 	if !ok {
@@ -107,8 +111,10 @@ func (this *LoggerStruct) getData(ctx context.Context,data interface{}) []interf
 
 		}
 	}
-	slice = append(slice, "traceId", ctx.Value("traceId"))
-	slice = append(slice, "file", trimmedPath(fileAndLine))
+	if ctx.Value("traceId") != nil {
+		slice = append(slice, "traceId", ctx.Value("traceId"))
+		slice = append(slice, "file", trimmedPath(fileAndLine))
+	}
 	slice = append(slice, "data", data)
 	return slice
 }
@@ -129,25 +135,25 @@ func trimmedPath(file string) string {
 
 // Debug logs a message at DebugLevel. The message includes any fields passed
 // at the log site, as well as any fields accumulated on the logger.
-func (this *LoggerStruct) Debug(ctx context.Context,keywords string, value interface{}) {
+func (this *LoggerStruct) Debug(ctx context.Context, keywords string, value interface{}) {
 
-	this.baseLogger.Debugw(keywords, this.getData(ctx,value)...)
+	this.baseLogger.Debugw(keywords, this.getData(ctx, value)...)
 }
 
 // Info logs a message at InfoLevel. The message includes any fields passed
 // at the log site, as well as any fields accumulated on the logger.
-func (this *LoggerStruct) Info(ctx context.Context,keywords string, value interface{}) {
-	this.baseLogger.Infow(keywords, this.getData(ctx,value)...)
+func (this *LoggerStruct) Info(ctx context.Context, keywords string, value interface{}) {
+	this.baseLogger.Infow(keywords, this.getData(ctx, value)...)
 }
 
 // Warn logs a message at WarnLevel. The message includes any fields passed
 // at the log site, as well as any fields accumulated on the logger.
-func (this *LoggerStruct) Warn(ctx context.Context,keywords string, value interface{}) {
-	this.baseLogger.Warnw(keywords, this.getData(ctx,value)...)
+func (this *LoggerStruct) Warn(ctx context.Context, keywords string, value interface{}) {
+	this.baseLogger.Warnw(keywords, this.getData(ctx, value)...)
 }
 
 // Error logs a message at ErrorLevel. The message includes any fields passed
 // at the log site, as well as any fields accumulated on the logger.
-func (this *LoggerStruct) Error(ctx context.Context,keywords string, value interface{}) {
-	this.baseLogger.Errorw(keywords, this.getData(ctx,value)...)
+func (this *LoggerStruct) Error(ctx context.Context, keywords string, value interface{}) {
+	this.baseLogger.Errorw(keywords, this.getData(ctx, value)...)
 }

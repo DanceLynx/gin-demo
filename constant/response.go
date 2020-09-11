@@ -15,6 +15,25 @@ const (
 	USER_VERIFY_FAILD    ResponseCode = 1004 //jwt认证失败
 	USER_JWT_PARSE_FAILD ResponseCode = 1005 //jwt解析失败
 
-	REDIS_ERROR ResponseCode  = 5000//redis 错误
+	REDIS_ERROR              ResponseCode = 5000 //redis 错误
 	REDIS_KEY_NOT_EXISTS_ERR ResponseCode = 5001 //redis key不存在
 )
+
+func getCodeTextMap() map[ResponseCode]string {
+
+	codeText := map[ResponseCode]string{
+		SUCCESS:              "成功",
+		CODE_404:             "页面不存在",
+		CODE_500:             "服务器内部错误",
+		USER_JWT_PARSE_FAILD: "非法登录11",
+	}
+	return codeText
+}
+
+func GetCodeText(code ResponseCode) string {
+	codeMap := getCodeTextMap()
+	if value, ok := codeMap[code]; ok {
+		return value
+	}
+	return "Unkown code text"
+}

@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-redis/redis/v8"
 	"hello/config"
-	"fmt"
 	"runtime"
 )
 
@@ -21,20 +21,19 @@ func ConnectRedis() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	InitLogger.Info("connnect to redis successful")
 }
 
-
-type redisLogger struct{
+type redisLogger struct {
 }
 
 func (this *redisLogger) Printf(ctx context.Context, format string, v ...interface{}) {
 	_, file, line, _ := runtime.Caller(3)
 	message := fmt.Sprintf(format, v...)
-	m := map[string]interface{} {
-		"file":fmt.Sprintf("%s:%d", file, line),
-		"message":message,
+	m := map[string]interface{}{
+		"file":    fmt.Sprintf("%s:%d", file, line),
+		"message": message,
 	}
-	Logger.Warn(ctx,"redis",m)
+	Logger.Warn(ctx, "redis", m)
 }

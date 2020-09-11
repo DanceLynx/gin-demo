@@ -19,10 +19,21 @@ func Success(ctx *gin.Context, message string, data map[string]interface{}) {
 		Message: message,
 		Data:    data,
 	}
-	ctx.JSON(http.StatusOK, response)
+	setResponse(ctx, http.StatusOK, response)
 }
 
-func Error(ctx *gin.Context, code constant.ResponseCode, message string, data map[string]interface{}) {
+func Error(ctx *gin.Context, code constant.ResponseCode, data map[string]interface{}) {
+
+	response := response{
+		Code:    code,
+		Message: constant.GetCodeText(code),
+		Data:    data,
+	}
+	ctx.Abort()
+	setResponse(ctx, http.StatusOK, response)
+}
+
+func ErrorWithMessage(ctx *gin.Context, code constant.ResponseCode, message string, data map[string]interface{}) {
 
 	response := response{
 		Code:    code,
@@ -30,11 +41,11 @@ func Error(ctx *gin.Context, code constant.ResponseCode, message string, data ma
 		Data:    data,
 	}
 	ctx.Abort()
-	setResponse(ctx,http.StatusOK, response)
+	setResponse(ctx, http.StatusOK, response)
 }
 
-func setResponse(ctx *gin.Context,statusCode int, resp response) {
-	ctx.Set("response",resp)
+func setResponse(ctx *gin.Context, statusCode int, resp response) {
+	ctx.Set("response", resp)
 	ctx.JSON(statusCode, resp)
 }
 
@@ -44,7 +55,8 @@ func NotFound(ctx *gin.Context) {
 		Message: "页面不存在",
 		Data:    gin.H{},
 	}
-	setResponse(ctx,http.StatusNotFound, response)
+	ctx.Abort()
+	setResponse(ctx, http.StatusNotFound, response)
 }
 
 func NoMethod(ctx *gin.Context) {
@@ -53,7 +65,8 @@ func NoMethod(ctx *gin.Context) {
 		Message: "Method不存在",
 		Data:    gin.H{},
 	}
-	setResponse(ctx,http.StatusMethodNotAllowed, response)
+	ctx.Abort()
+	setResponse(ctx, http.StatusMethodNotAllowed, response)
 }
 
 func StatusUnauthorized(ctx *gin.Context) {
@@ -62,7 +75,8 @@ func StatusUnauthorized(ctx *gin.Context) {
 		Message: "认证失败",
 		Data:    gin.H{},
 	}
-	setResponse(ctx,http.StatusUnauthorized, response)
+	ctx.Abort()
+	setResponse(ctx, http.StatusUnauthorized, response)
 }
 
 func StatusInternalServerError(ctx *gin.Context) {
@@ -72,5 +86,6 @@ func StatusInternalServerError(ctx *gin.Context) {
 		Message: "服务器内部错误",
 		Data:    gin.H{},
 	}
-	setResponse(ctx,http.StatusInternalServerError, response)
+	ctx.Abort()
+	setResponse(ctx, http.StatusInternalServerError, response)
 }

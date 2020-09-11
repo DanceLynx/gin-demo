@@ -14,34 +14,35 @@ func Login(ctx *gin.Context) {
 
 	var user model.User
 	if err := ctx.ShouldBind(&user); err != nil {
-		Error(ctx, constant.USER_LOGIN_FAILED, "登录失败", gin.H{})
+		ErrorWithMessage(ctx, constant.USER_LOGIN_FAILED, "登录失败", gin.H{})
 		return
 	}
 	result := service.DB(ctx).Find(&user)
+	service.Logger.Info(ctx, "find", result)
+	service.Logger.Info(ctx, "user", user)
 	if result.Error != nil {
-		Error(ctx, constant.USER_NOT_EXISTS, "用户不存在", gin.H{})
-		service.Logger.Info(ctx,"login",result.Error)
+		ErrorWithMessage(ctx, constant.USER_NOT_EXISTS, "用户不存在", gin.H{})
 		return
 	}
 	access_token, err := util.CreateToken(user.ID, config.App.JWT_TOKEN)
 	if err != nil {
-		Error(ctx, constant.USER_JWT_ERROR, "登录失败", gin.H{})
+		Error(ctx, constant.USER_JWT_ERROR, gin.H{})
 		return
 	}
-	err = service.Redis.HMSet(ctx, "jwt:user:"+strconv.Itoa(int(user.ID)), 
+	err = service.Redis.HMSet(ctx, "jwt:user:"+strconv.Itoa(int(user.ID)),
 		map[string]interface{}{
-			"userId":user.ID,
-			"username":user.Username,
+			"userId":   user.ID,
+			"username": user.Username,
 		},
 	).Err()
 
 	if err != nil {
-		service.Logger.Info(ctx,"login jwt",err)
-		Error(ctx, constant.REDIS_ERROR,err.Error(), gin.H{})
+		service.Logger.Info(ctx, "login jwt", err)
+		ErrorWithMessage(ctx, constant.REDIS_ERROR, err.Error(), gin.H{})
 		return
 	}
 	ctx.Writer.Header().Set("Authentication", access_token)
-	Success(ctx, "登录成功", gin.H{"info":user})
+	Success(ctx, "登录成功", gin.H{"info": user})
 
 }
 
