@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"hello/model"
 	"hello/service"
@@ -29,19 +28,16 @@ func TestDB(ctx *gin.Context) {
 	user := model.User{
 		Username: "范兄弟",
 		Password: "3333",
+		CreateAt:time.Now(),
 	}
-	service.User.AddUser(&user)
-	fmt.Println(user)
-
-	user1, err1 := service.User.GetUserById(1)
-	if err1 != nil {
-		service.Logger.Error(ctx,"user1 error", err1)
+	result:= service.DB(ctx).Create(&user)
+	if result.Error != nil {
+		service.Logger.Error(ctx,"create User error", result.Error)
+	} else {
+		service.Logger.Info(ctx,"create User", user)
+		service.Redis.Set(ctx,"hello",user.Username,5)
+		Success(ctx, "成功", gin.H{"data": user})
 	}
-	service.Logger.Info(ctx,"user1", user1)
-	service.Logger.Info(ctx,"444444", user1)
-	service.Logger.Info(ctx,"66666666", user1)
-	service.Redis.Set(ctx, "name", "Hello JSON", 5)
-	Success(ctx, "成功", gin.H{"data": user1})
 }
 
 func Test(ctx *gin.Context) {

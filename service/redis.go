@@ -5,6 +5,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"hello/config"
 	"fmt"
+	"runtime"
 )
 
 var Redis *redis.Client
@@ -29,6 +30,11 @@ type redisLogger struct{
 }
 
 func (this *redisLogger) Printf(ctx context.Context, format string, v ...interface{}) {
-	msg := fmt.Sprintf(format, v...)
-	Logger.Warn(ctx,"redis",msg)
+	_, file, line, _ := runtime.Caller(3)
+	message := fmt.Sprintf(format, v...)
+	m := map[string]interface{} {
+		"file":fmt.Sprintf("%s:%d", file, line),
+		"message":message,
+	}
+	Logger.Warn(ctx,"redis",m)
 }

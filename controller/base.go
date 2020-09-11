@@ -29,7 +29,13 @@ func Error(ctx *gin.Context, code constant.ResponseCode, message string, data ma
 		Message: message,
 		Data:    data,
 	}
-	ctx.AbortWithStatusJSON(http.StatusOK, response)
+	ctx.Abort()
+	setResponse(ctx,http.StatusOK, response)
+}
+
+func setResponse(ctx *gin.Context,statusCode int, resp response) {
+	ctx.Set("response",resp)
+	ctx.JSON(statusCode, resp)
 }
 
 func NotFound(ctx *gin.Context) {
@@ -38,7 +44,7 @@ func NotFound(ctx *gin.Context) {
 		Message: "页面不存在",
 		Data:    gin.H{},
 	}
-	ctx.JSON(http.StatusNotFound, response)
+	setResponse(ctx,http.StatusNotFound, response)
 }
 
 func NoMethod(ctx *gin.Context) {
@@ -47,7 +53,7 @@ func NoMethod(ctx *gin.Context) {
 		Message: "Method不存在",
 		Data:    gin.H{},
 	}
-	ctx.JSON(http.StatusMethodNotAllowed, response)
+	setResponse(ctx,http.StatusMethodNotAllowed, response)
 }
 
 func StatusUnauthorized(ctx *gin.Context) {
@@ -56,7 +62,7 @@ func StatusUnauthorized(ctx *gin.Context) {
 		Message: "认证失败",
 		Data:    gin.H{},
 	}
-	ctx.JSON(http.StatusUnauthorized, response)
+	setResponse(ctx,http.StatusUnauthorized, response)
 }
 
 func StatusInternalServerError(ctx *gin.Context) {
@@ -66,5 +72,5 @@ func StatusInternalServerError(ctx *gin.Context) {
 		Message: "服务器内部错误",
 		Data:    gin.H{},
 	}
-	ctx.JSON(http.StatusInternalServerError, response)
+	setResponse(ctx,http.StatusInternalServerError, response)
 }

@@ -13,8 +13,21 @@ func accessLog(logger *zap.Logger) gin.HandlerFunc {
 		// some evil middlewares modify this values
 		path := c.Request.URL.Path
 		query := c.Request.URL.RawQuery
-		c.Next()
+		c.Request.ParseForm()
+		traceId,_:= c.Get("traceId")
+		logger.Info("request",
+			zap.String("traceId",traceId.(string)),
+			zap.String("method", c.Request.Method),
+			zap.String("ip", c.ClientIP()),
+			zap.String("path", path),
+			zap.String("query", query),
+			zap.Any("post",c.Request.PostForm),
+			
+			
+			//zap.String("user-agent", c.Request.UserAgent()),
+		)
 
+		c.Next()
 		end := time.Now()
 		cost := end.Sub(start)
 
@@ -25,13 +38,11 @@ func accessLog(logger *zap.Logger) gin.HandlerFunc {
 				logger.Error(e)
 			}
 		} else {
-			logger.Info("request",
+			response ,_:= c.Get("response")
+			logger.Info("response",
+				zap.String("traceId",traceId.(string)),
 				zap.Int("status", c.Writer.Status()),
-				zap.String("method", c.Request.Method),
-				zap.String("path", path),
-				zap.String("query", query),
-				zap.String("ip", c.ClientIP()),
-				zap.String("user-agent", c.Request.UserAgent()),
+				zap.Any("data",response),
 				zap.Duration("cost", cost),
 			)
 		}

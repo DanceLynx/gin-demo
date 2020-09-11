@@ -97,18 +97,18 @@ func (this *LoggerStruct) getData(ctx context.Context,data interface{}) []interf
 		panic("can not get file path and line")
 	}
 
-	fileAndLine := fmt.Sprintf("%s:%d", trimmedPath(file), line)
+	fileAndLine := fmt.Sprintf("%s:%d", file, line)
 	//gorm的file写在data里面，替换到外面标准格式
 	if m, ok := data.(map[string]interface{}); ok {
 		value, ok := m["file"]
 		if ok {
-			fileAndLine = trimmedPath(value.(string))
+			fileAndLine = value.(string)
 			delete(m, "file")
 
 		}
 	}
 	slice = append(slice, "traceId", ctx.Value("traceId"))
-	slice = append(slice, "file", fileAndLine)
+	slice = append(slice, "file", trimmedPath(fileAndLine))
 	slice = append(slice, "data", data)
 	return slice
 }

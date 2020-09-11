@@ -33,3 +33,4 @@ func resourceRelease() {
 		service.DisconnectDB()
 	}()
 }
+
