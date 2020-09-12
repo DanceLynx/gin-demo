@@ -23,14 +23,14 @@ func ConnectDB() {
 
 	mysqlConfig := gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "t_", // table name prefix, table for `User` would be `t_users`
-			SingularTable: true, // use singular table name, table for `User` would be `user` with this option enabled
+			TablePrefix:   config.DB.PREFIX, // table name prefix, table for `User` would be `t_users`
+			SingularTable: true,             // use singular table name, table for `User` would be `user` with this option enabled
 		},
 		Logger: &logger,
 	}
 	db, err = gorm.Open(mysql.New(mysql.Config{
 		DSN:                       database_url, // data source name
-		DefaultStringSize:         256,          // default size for string fields
+		DefaultStringSize:         255,          // default size for string fields
 		DisableDatetimePrecision:  true,         // disable datetime precision, which not supported before MySQL 5.6
 		DontSupportRenameIndex:    true,         // drop & create when rename index, rename index not supported before MySQL 5.7, MariaDB
 		DontSupportRenameColumn:   true,         // `change` when rename column, rename column not supported before MySQL 8, MariaDB
@@ -111,12 +111,12 @@ func (this dbLogger) Warn(ctx context.Context, msg string, data ...interface{}) 
 // Error print error messages
 func (this dbLogger) Error(ctx context.Context, msg string, data ...interface{}) {
 	message := fmt.Sprintf(msg, append([]interface{}{utils.FileWithLineNum()}, data...))
-	panic(message)
 	if ctx.Value("traceId") != nil {
 		Logger.Error(ctx, "gorm error", message)
 	} else {
 		gormLogger.Error(ctx, "gorm error", message)
 	}
+	panic(message)
 }
 
 // Trace print sql message
@@ -134,12 +134,13 @@ func (this dbLogger) Trace(ctx context.Context, begin time.Time, fc func() (stri
 	switch {
 	case err != nil:
 		m["err"] = err
-		panic(m)
+
 		if ctx.Value("traceId") != nil {
 			Logger.Error(ctx, "gorm", m)
 		} else {
 			gormLogger.Error(ctx, "gorm", m)
 		}
+		panic(m)
 	case elapsed > this.SlowThreshold && this.SlowThreshold != 0:
 		if ctx.Value("traceId") != nil {
 			Logger.Warn(ctx, "gorm", m)

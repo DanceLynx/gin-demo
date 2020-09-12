@@ -6,6 +6,7 @@ import (
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs" //日志切分
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"hello/config"
 	"io"
 	"runtime"
 	"strings"
@@ -16,6 +17,23 @@ type LoggerStruct struct {
 	baseLogger *zap.SugaredLogger
 }
 
+func getLogLevel(level string) zapcore.Level {
+
+	m := map[string]zapcore.Level{
+		"info":  zapcore.InfoLevel,
+		"debug": zapcore.DebugLevel,
+		"error": zapcore.ErrorLevel,
+		"warn":  zapcore.WarnLevel,
+	}
+
+	l, ok := m[level]
+	if ok {
+		return l
+	} else {
+		return zapcore.InfoLevel
+	}
+}
+
 var Logger, gormLogger *LoggerStruct
 
 var HttpLogger, ErrorLogger, InitLogger *zap.Logger
@@ -23,18 +41,18 @@ var HttpLogger, ErrorLogger, InitLogger *zap.Logger
 func InitLog() {
 
 	Logger = &LoggerStruct{
-		baseLogger: getLogger("app", "json", zapcore.DebugLevel).Sugar(),
+		baseLogger: getLogger("app", config.Log.Formatter, config.Log.LogLevel).Sugar(),
 	}
 	gormLogger = &LoggerStruct{
-		baseLogger: getLogger("mysql", "console", zapcore.DebugLevel).Sugar(),
+		baseLogger: getLogger("mysql", "json", "debug").Sugar(),
 	}
-	HttpLogger = getLogger("request", "console", zapcore.InfoLevel)
-	ErrorLogger = getLogger("error", "console", zapcore.ErrorLevel)
-	InitLogger = getLogger("init", "console", zapcore.InfoLevel)
+	HttpLogger = getLogger("request", "console", "info")
+	ErrorLogger = getLogger("error", "console", "error")
+	InitLogger = getLogger("init", "console", "info")
 	InitLogger.Info("init log successful.")
 }
 
-func getLogger(filename string, encodertype string, level zapcore.Level) *zap.Logger {
+func getLogger(filename string, encodertype string, level string) *zap.Logger {
 
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "time",
@@ -51,15 +69,15 @@ func getLogger(filename string, encodertype string, level zapcore.Level) *zap.Lo
 		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}
 	var encoder zapcore.Encoder
-	if encodertype == "json" {
-		encoder = zapcore.NewJSONEncoder(encoderConfig)
-	} else {
+	if encodertype == "console" {
 		encoder = zapcore.NewConsoleEncoder(encoderConfig)
+	} else {
+		encoder = zapcore.NewJSONEncoder(encoderConfig)
 	}
 
 	logWriter := getWriter("./logs/" + filename)
 	core := zapcore.NewTee(
-		zapcore.NewCore(encoder, zapcore.AddSync(logWriter), level),
+		zapcore.NewCore(encoder, zapcore.AddSync(logWriter), getLogLevel(level)),
 	)
 	return zap.New(core)
 }

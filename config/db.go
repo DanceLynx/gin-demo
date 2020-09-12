@@ -11,4 +11,5 @@ type dbStruct struct {
 	ShowSql         bool   `ini:"print_sql"`
 	ENGINE          string `ini:"engine"`
 	CHARSET         string `ini:"charset"`
+	PREFIX          string `ini:"prefix"`
 }

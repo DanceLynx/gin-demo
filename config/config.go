@@ -13,8 +13,8 @@ type configStruct struct {
 
 //应用配置
 type appStruct struct {
-	AppName string `ini:"app_name"`
-	Port    string `ini:"port"`
+	AppName   string `ini:"app_name"`
+	Port      string `ini:"port"`
 	JWT_TOKEN string `ini:"jwt_token"`
 }
 
