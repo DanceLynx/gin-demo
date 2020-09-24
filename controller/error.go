@@ -5,5 +5,5 @@ import (
 )
 
 func NoRoute(ctx *gin.Context) {
-	NotFound(ctx)
+	NOTFOUND(ctx)
 }

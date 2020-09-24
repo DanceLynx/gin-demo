@@ -2,9 +2,10 @@ package router
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"hello/controller"
 	"hello/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 func LoadRoutes(router *gin.Engine) {
@@ -12,8 +13,6 @@ func LoadRoutes(router *gin.Engine) {
 	gin.DisableConsoleColor()
 	//404错误
 	router.NoRoute(controller.NoRoute)
-	//405 method not exist
-	router.NoMethod(controller.NoMethod)
 	//jwt login
 	router.POST("/login", controller.Login)
 

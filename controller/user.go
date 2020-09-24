@@ -17,18 +17,18 @@ func Login(ctx *gin.Context) {
 
 	var user model.User
 	if err := ctx.ShouldBind(&user); err != nil {
-		ErrorWithMessage(ctx, constant.USER_LOGIN_FAILED, "登录失败", gin.H{})
+		ErrorWithMessage(ctx, constant.USER_LOGIN_FAILED, "登录失败")
 		return
 	}
 	err := service.UserService.Find(ctx, &user)
 	log.Info(ctx, "user", user)
 	if err != nil {
-		ErrorWithMessage(ctx, constant.USER_NOT_EXISTS, "用户不存在", gin.H{})
+		ErrorWithMessage(ctx, constant.USER_NOT_EXISTS, "用户不存在")
 		return
 	}
 	access_token, err := util.CreateToken(user.ID, config.App.JWT_TOKEN)
 	if err != nil {
-		Error(ctx, constant.USER_JWT_ERROR, gin.H{})
+		Error(ctx, constant.USER_JWT_ERROR)
 		return
 	}
 	err = redis.Client.HMSet(ctx, "jwt:user:"+strconv.Itoa(int(user.ID)),
@@ -40,7 +40,7 @@ func Login(ctx *gin.Context) {
 
 	if err != nil {
 		log.Info(ctx, "login jwt", err)
-		ErrorWithMessage(ctx, constant.REDIS_ERROR, err.Error(), gin.H{})
+		ErrorWithMessage(ctx, constant.REDIS_ERROR, err.Error())
 		return
 	}
 	ctx.Writer.Header().Set("Authentication", access_token)

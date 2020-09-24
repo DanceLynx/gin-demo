@@ -13,6 +13,5 @@ func injectData(ctx *gin.Context) {
 	traceId := ksuid.New().String()
 
 	ctx.Set("traceId", strings.ToLower(traceId))
-	ctx.Next()
 	fmt.Println("inject data")
 }

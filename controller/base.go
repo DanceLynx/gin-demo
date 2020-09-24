@@ -23,25 +23,23 @@ func Success(ctx *gin.Context, message string, data map[string]interface{}) {
 	setResponse(ctx, http.StatusOK, response)
 }
 
-func Error(ctx *gin.Context, code constant.ResponseCode, data map[string]interface{}) {
+func Error(ctx *gin.Context, code constant.ResponseCode) {
 
 	response := response{
 		Code:    code,
 		Message: constant.GetCodeText(code),
-		Data:    data,
+		Data:    gin.H{},
 	}
-	ctx.Abort()
 	setResponse(ctx, http.StatusOK, response)
 }
 
-func ErrorWithMessage(ctx *gin.Context, code constant.ResponseCode, message string, data map[string]interface{}) {
+func ErrorWithMessage(ctx *gin.Context, code constant.ResponseCode, message string) {
 
 	response := response{
 		Code:    code,
 		Message: message,
-		Data:    data,
+		Data:    gin.H{},
 	}
-	ctx.Abort()
 	setResponse(ctx, http.StatusOK, response)
 }
 
@@ -50,43 +48,22 @@ func setResponse(ctx *gin.Context, statusCode int, resp response) {
 	ctx.JSON(statusCode, resp)
 }
 
-func NotFound(ctx *gin.Context) {
+func NOTFOUND(ctx *gin.Context) {
 	response := response{
 		Code:    constant.CODE_404,
-		Message: "页面不存在",
+		Message: constant.GetCodeText(constant.CODE_404),
 		Data:    gin.H{},
 	}
-	ctx.Abort()
-	setResponse(ctx, http.StatusNotFound, response)
-}
-
-func NoMethod(ctx *gin.Context) {
-	response := response{
-		Code:    constant.CODE_404,
-		Message: "Method不存在",
-		Data:    gin.H{},
-	}
-	ctx.Abort()
-	setResponse(ctx, http.StatusMethodNotAllowed, response)
-}
-
-func StatusUnauthorized(ctx *gin.Context) {
-	response := response{
-		Code:    constant.USER_VERIFY_FAILD,
-		Message: "认证失败",
-		Data:    gin.H{},
-	}
-	ctx.Abort()
-	setResponse(ctx, http.StatusUnauthorized, response)
+	ctx.Set("response", response)
+	ctx.JSON(http.StatusNotFound, response)
 }
 
 func StatusInternalServerError(ctx *gin.Context) {
-	ctx.Status(http.StatusInternalServerError)
 	response := response{
 		Code:    constant.CODE_500,
-		Message: "服务器内部错误",
+		Message: constant.GetCodeText(constant.CODE_500),
 		Data:    gin.H{},
 	}
-	ctx.Abort()
-	setResponse(ctx, http.StatusInternalServerError, response)
+	ctx.Set("response", response)
+	ctx.JSON(http.StatusInternalServerError, response)
 }

@@ -12,7 +12,6 @@ import (
 )
 
 func Index(ctx *gin.Context) {
-
 	Success(ctx, "获取成功", gin.H{"hello": "test"})
 }
 
@@ -46,7 +45,6 @@ func TestDB(ctx *gin.Context) {
 }
 
 func Test(ctx *gin.Context) {
-	panic("this is me")
 }
 
 func TestQuery(ctx *gin.Context) {

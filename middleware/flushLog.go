@@ -8,7 +8,6 @@ import (
 )
 
 func flushLog(ctx *gin.Context) {
-	ctx.Next()
 	fmt.Print("flush log")
 	log.LogSync()
 }
