@@ -1,13 +1,16 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"hello/config"
 	"hello/constant"
+	"hello/core/log"
+	"hello/core/redis"
 	"hello/model"
 	"hello/service"
 	"hello/util"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Login(ctx *gin.Context) {
@@ -17,10 +20,9 @@ func Login(ctx *gin.Context) {
 		ErrorWithMessage(ctx, constant.USER_LOGIN_FAILED, "登录失败", gin.H{})
 		return
 	}
-	result := service.DB(ctx).Find(&user)
-	service.Logger.Info(ctx, "find", result)
-	service.Logger.Info(ctx, "user", user)
-	if result.Error != nil {
+	err := service.UserService.Find(ctx, &user)
+	log.Info(ctx, "user", user)
+	if err != nil {
 		ErrorWithMessage(ctx, constant.USER_NOT_EXISTS, "用户不存在", gin.H{})
 		return
 	}
@@ -29,7 +31,7 @@ func Login(ctx *gin.Context) {
 		Error(ctx, constant.USER_JWT_ERROR, gin.H{})
 		return
 	}
-	err = service.Redis.HMSet(ctx, "jwt:user:"+strconv.Itoa(int(user.ID)),
+	err = redis.Client.HMSet(ctx, "jwt:user:"+strconv.Itoa(int(user.ID)),
 		map[string]interface{}{
 			"userId":   user.ID,
 			"username": user.Username,
@@ -37,7 +39,7 @@ func Login(ctx *gin.Context) {
 	).Err()
 
 	if err != nil {
-		service.Logger.Info(ctx, "login jwt", err)
+		log.Info(ctx, "login jwt", err)
 		ErrorWithMessage(ctx, constant.REDIS_ERROR, err.Error(), gin.H{})
 		return
 	}

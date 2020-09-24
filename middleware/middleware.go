@@ -1,10 +1,12 @@
 package middleware
 
 import (
+	"hello/core/log"
+
 	"github.com/gin-gonic/gin"
-	"hello/service"
 )
 
+//LoadMiddlewares load all middleware to route
 func LoadMiddlewares(router *gin.Engine) {
 
 	router.Use(injectData) //middleware for inject data
@@ -13,11 +15,12 @@ func LoadMiddlewares(router *gin.Engine) {
 	//   - Logs all requests, like a combined access and error log.
 	//   - Logs to stdout.
 	//   - RFC3339 with UTC time format.
-	router.Use(accessLog(service.HttpLogger))
+	router.Use(accessLog(log.HttpLogger))
 
 	// Logs all panic to error log
 	//   - stack means whether output the stack info.
-	router.Use(recoveryWithLog(service.ErrorLogger, true))
+	router.Use(recoveryWithLog(log.ErrorLogger, true))
+	router.Use(flushLog)
 
-	service.InitLogger.Info("load all middleware successful")
+	log.InitLogger.Info("load all middleware successful")
 }

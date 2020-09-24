@@ -1,9 +1,11 @@
 package middleware
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/segmentio/ksuid"
-	"strings"
 )
 
 func injectData(ctx *gin.Context) {
@@ -12,4 +14,5 @@ func injectData(ctx *gin.Context) {
 
 	ctx.Set("traceId", strings.ToLower(traceId))
 	ctx.Next()
+	fmt.Println("inject data")
 }

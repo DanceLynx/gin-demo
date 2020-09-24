@@ -1,10 +1,14 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
+	"fmt"
+	"hello/core/log"
+	"hello/core/redis"
 	"hello/model"
 	"hello/service"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Index(ctx *gin.Context) {
@@ -13,11 +17,11 @@ func Index(ctx *gin.Context) {
 }
 
 func TestRedis(ctx *gin.Context) {
-	err := service.Redis.Set(ctx, "name", "Hello JSON", 5*time.Minute).Err()
+	err := redis.Client.Set(ctx, "name", "Hello JSON", 5*time.Minute).Err()
 	if err != nil {
 		panic(err)
 	}
-	val, err := service.Redis.Get(ctx, "name").Result()
+	val, err := redis.Client.Get(ctx, "name").Result()
 	if err != nil {
 		panic(err)
 	}
@@ -30,12 +34,13 @@ func TestDB(ctx *gin.Context) {
 		Password: "3333",
 		CreateAt: time.Now(),
 	}
-	result := service.DB(ctx).Create(&user)
-	if result.Error != nil {
-		service.Logger.Error(ctx, "create User error", result.Error)
+	err := service.UserService.Create(ctx, &user)
+	fmt.Print(user)
+	if err != nil {
+		log.Error(ctx, "create User error", err)
 	} else {
-		service.Logger.Info(ctx, "create User", user)
-		service.Redis.Set(ctx, "hello", user.Username, 5)
+		log.Info(ctx, "create User", user)
+		redis.Client.Set(ctx, "hello", user.Username, 5)
 		Success(ctx, "成功", gin.H{"data": user})
 	}
 }

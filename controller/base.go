@@ -1,9 +1,10 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"hello/constant"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type response struct {

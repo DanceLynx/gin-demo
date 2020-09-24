@@ -1,39 +1,43 @@
-package service
+package redis
 
 import (
 	"context"
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"hello/config"
+	"hello/core/log"
 	"runtime"
+
+	"github.com/go-redis/redis/v8"
 )
 
-var Redis *redis.Client
+// Client client instance to use redis
+var Client *redis.Client
 
+//ConnectRedis connect to redis
 func ConnectRedis() {
 	redis.SetLogger(&redisLogger{})
-	Redis = redis.NewClient(&redis.Options{
+	Client = redis.NewClient(&redis.Options{
 		Addr: config.Redis.Addr,
 		DB:   config.Redis.DB, // use default DB
 	})
 	ctx := context.Background()
-	_, err := Redis.Ping(ctx).Result()
+	_, err := Client.Ping(ctx).Result()
 	if err != nil {
 		panic(err)
 	}
 
-	InitLogger.Info("connnect to redis successful")
+	log.InitLogger.Info("connnect to redis successful")
 }
 
 type redisLogger struct {
 }
 
-func (this *redisLogger) Printf(ctx context.Context, format string, v ...interface{}) {
+func (l *redisLogger) Printf(ctx context.Context, format string, v ...interface{}) {
 	_, file, line, _ := runtime.Caller(3)
 	message := fmt.Sprintf(format, v...)
 	m := map[string]interface{}{
 		"file":    fmt.Sprintf("%s:%d", file, line),
 		"message": message,
 	}
-	Logger.Warn(ctx, "redis", m)
+	log.Warn(ctx, "redis", m)
 }
