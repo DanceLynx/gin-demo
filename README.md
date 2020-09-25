@@ -37,7 +37,7 @@
     {"level":"error","time":"2020-09-25 13:47:53.578","keywords":"err","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"c9f00ccb-f5f5-4c51-ad09-d3a29c46224a","file":"controller/home.go:19","data":"this is error"}
   
     {"level":"warn","time":"2020-09-25 13:47:54.246","keywords":"wa","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"9d130d78-58a7-4271-914e-2c8de140d2be","file":"controller/home.go:17","data":"this is warn"}
-  {"level":"error","time":"2020-09-25 13:47:54.246","keywords":"err","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"9d130d78-58a7-4271-914e-2c8de140d2be","file":"controller/home.go:19","data":"this is error"}
+  
 
  ```
 
