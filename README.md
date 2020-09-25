@@ -31,12 +31,15 @@
 
     记录开发过程中，我们记录的业务日志，这是我们最常用的日志，日志当中记录了requestId，方便快速根据请求查看当前请求的日志流,
     同时也有TraceId用于链路跟踪，分析用户行为，日志格式如下,包括了TraceId、requestId、file、keywords，以及我们记录的重要信息，体现在data里面:
+    
+ ```shell
 
-    ```shell
     {"level":"error","time":"2020-09-25 13:47:53.578","keywords":"err","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"c9f00ccb-f5f5-4c51-ad09-d3a29c46224a","file":"controller/home.go:19","data":"this is error"}
-  {"level":"warn","time":"2020-09-25 13:47:54.246","keywords":"wa","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"9d130d78-58a7-4271-914e-2c8de140d2be","file":"controller/home.go:17","data":"this is warn"}
+  
+    {"level":"warn","time":"2020-09-25 13:47:54.246","keywords":"wa","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"9d130d78-58a7-4271-914e-2c8de140d2be","file":"controller/home.go:17","data":"this is warn"}
   {"level":"error","time":"2020-09-25 13:47:54.246","keywords":"err","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"9d130d78-58a7-4271-914e-2c8de140d2be","file":"controller/home.go:19","data":"this is error"}
-    ```
+
+ ```
 
 - 集成jwt，一种流行的web身份认证方式，减轻服务端压力，将用户登录验证信息存储在可以端
 
