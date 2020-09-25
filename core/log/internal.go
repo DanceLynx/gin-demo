@@ -7,10 +7,10 @@ import (
 var HttpLogger, ErrorLogger, InitLogger, GormLogger *zap.Logger
 
 func initInternalLog() {
-	GormLogger = getLogger("mysql", "json", "debug")
-	HttpLogger = getLogger("request", "console", "info")
-	ErrorLogger = getLogger("error", "console", "error")
-	InitLogger = getLogger("init", "console", "info")
+	GormLogger = getLogger("mysql", "json", "debug", false)
+	HttpLogger = getLogger("request", "console", "info", false)
+	ErrorLogger = getLogger("panic", "console", "error", false)
+	InitLogger = getLogger("init", "console", "info", false)
 }
 
 func flushInternalLog() {

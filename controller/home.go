@@ -12,6 +12,11 @@ import (
 )
 
 func Index(ctx *gin.Context) {
+	log.Debug(ctx, "tt", "this is debug")
+	log.Info(ctx, "aaa", "this is ifno")
+	log.Warn(ctx, "wa", "this is warn")
+	redis.Client.Set(ctx, "name", "Hello JSON", 5*time.Minute).Err()
+	log.Error(ctx, "err", "this is error")
 	Success(ctx, "获取成功", gin.H{"hello": "test"})
 }
 

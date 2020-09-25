@@ -12,7 +12,7 @@ import (
 var logger *zap.SugaredLogger
 
 func initAppLog() {
-	logger = getLogger("app", config.Log.Formatter, config.Log.LogLevel).Sugar()
+	logger = getLogger("app", config.Log.Formatter, config.Log.LogLevel, true).Sugar()
 }
 
 func flushAppLog() {
