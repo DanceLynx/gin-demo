@@ -48,6 +48,7 @@ func setResponse(ctx *gin.Context, statusCode int, resp response) {
 	ctx.JSON(statusCode, resp)
 }
 
+//NOTFOUND method not found action
 func NOTFOUND(ctx *gin.Context) {
 	response := response{
 		Code:    constant.CODE_404,
@@ -58,6 +59,7 @@ func NOTFOUND(ctx *gin.Context) {
 	ctx.JSON(http.StatusNotFound, response)
 }
 
+//StatusInternalServerError server 500 error
 func StatusInternalServerError(ctx *gin.Context) {
 	response := response{
 		Code:    constant.CODE_500,

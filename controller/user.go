@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func Login(ctx *gin.Context) {
@@ -44,6 +45,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 	ctx.Writer.Header().Set("Authentication", access_token)
+	ctx.Writer.Header().Set("TraceId", uuid.New().String())
 	Success(ctx, "登录成功", gin.H{"info": user})
 
 }

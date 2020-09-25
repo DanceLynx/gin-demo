@@ -12,13 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthRequired(ctx *gin.Context) {
-	authToken := ctx.Request.Header.Get("Authentication")
-	if authToken == "" {
-		controller.ErrorWithMessage(ctx, constant.USER_JWT_PARSE_FAILD, "登录失败")
-		ctx.Abort()
-		return
-	}
+func JWTAuthRequired(ctx *gin.Context) {
+	authToken := ctx.GetHeader("Authentication")
 	uid, err := util.ParseToken(authToken, config.App.JWT_TOKEN)
 	if err != nil {
 		controller.Error(ctx, constant.USER_JWT_PARSE_FAILD)
@@ -51,7 +46,5 @@ func AuthRequired(ctx *gin.Context) {
 		return
 	}
 	ctx.Writer.Header().Set("Authentication", accessToken)
-
-	ctx.Set("userId", uid)
-	ctx.Set("authToken", authToken)
+	ctx.Writer.Header().Set("TraceId", ctx.GetHeader("TraceId"))
 }

@@ -21,6 +21,7 @@ const (
 
 var codeTextMap = map[ResponseCode]string{
 	SUCCESS:              "成功",
+	CODE_403:             "认证失败",
 	CODE_404:             "页面不存在",
 	CODE_500:             "服务器内部错误",
 	USER_JWT_PARSE_FAILD: "登录失败",

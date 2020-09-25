@@ -36,8 +36,9 @@ func getData(ctx context.Context, data interface{}) []interface{} {
 
 		}
 	}
-	if ctx.Value("traceId") != nil {
-		slice = append(slice, "traceId", ctx.Value("traceId"))
+	if ctx.Value("TraceId") != nil {
+		slice = append(slice, "TraceId", ctx.Value("TraceId"))
+		slice = append(slice, "requestId", ctx.Value("requestId"))
 		slice = append(slice, "file", trimmedPath(fileAndLine))
 	}
 	slice = append(slice, "data", data)

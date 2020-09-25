@@ -23,17 +23,19 @@
 
     记录启动项目时，迁移数据库执行的sql情况日志
 
-  - err日志
+  - panic日志
 
-    记录http请求产生的错误日志，方便快速定位错误问题
+    记录http请求产生的panic错误日志，方便快速定位错误问题
 
   - app日志
 
-    记录开发过程中，我们记录的业务日志，这是我们最常用的日志，日志当中记录了traceId，方便快速根据请求查看当前请求的日志流,日志格式如下,包括了traceId、file、keywords，以及我们记录的重要信息，提现在data里面:
+    记录开发过程中，我们记录的业务日志，这是我们最常用的日志，日志当中记录了requestId，方便快速根据请求查看当前请求的日志流,
+    同时也有TraceId用于链路跟踪，分析用户行为，日志格式如下,包括了TraceId、requestId、file、keywords，以及我们记录的重要信息，体现在data里面:
 
-    ```she
-    {"level":"info","time":"2020-09-12 10:56:07.432","keywords":"create User","traceId":"1hops10syiy0tycvpgnpkab9x31","file":"controller/home.go:37","data":{"ID":5,"CreatedAt":"2020-09-12T10:56:07.4261674+08:00","UpdatedAt":"2020-09-12T10:56:07.4261674+08:00","DeletedAt":null,"Username":"范兄弟","Password":"3333","Status":1,"CreateAt":"2020-09-12T10:56:07.4251674+08:00"}}
-    {"level":"warn","time":"2020-09-12 10:56:07.432","keywords":"redis","traceId":"1hops10syiy0tycvpgnpkab9x31","file":"controller/home.go:38","data":{"message":"specified duration is 5ns, but minimal supported value is 1ms - truncating to 1ms"}}
+    ```shell
+    {"level":"error","time":"2020-09-25 13:47:53.578","keywords":"err","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"c9f00ccb-f5f5-4c51-ad09-d3a29c46224a","file":"controller/home.go:19","data":"this is error"}
+{"level":"warn","time":"2020-09-25 13:47:54.246","keywords":"wa","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"9d130d78-58a7-4271-914e-2c8de140d2be","file":"controller/home.go:17","data":"this is warn"}
+{"level":"error","time":"2020-09-25 13:47:54.246","keywords":"err","TraceId":"1acaba61-10e3-499f-9cb7-5cca47abfcc0","requestId":"9d130d78-58a7-4271-914e-2c8de140d2be","file":"controller/home.go:19","data":"this is error"}
     ```
 
 - 集成jwt，一种流行的web身份认证方式，减轻服务端压力，将用户登录验证信息存储在可以端
@@ -49,7 +51,9 @@
 - middleware -中间件目录
 - model -表模型目录
 - router -路由配置目录
-- service -服务存放目录，包括db、log、redis
+- service -服务存放目录
+- repository -数据库操作
+- core -定义了log、db、redis等基础组件的封装、封装
 - util -其它工具目录
 - main.go -程序入库文件
 

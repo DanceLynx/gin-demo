@@ -17,7 +17,7 @@ func LoadRoutes(router *gin.Engine) {
 	router.POST("/login", controller.Login)
 
 	v1 := router.Group("/v1")
-	v1.Use(middleware.AuthRequired)
+	v1.Use(middleware.CheckHeaderRequired, middleware.JWTAuthRequired)
 	{
 		v1.GET("/ping", func(c *gin.Context) {
 			c.JSON(200, gin.H{
